@@ -28,6 +28,7 @@ runs:
     - ${{ inputs.host_id }}
     - ${{ inputs.api_key }}
     - ${{ inputs.certificate }}
+    - ${{ inputs.secrets }}
 branding:
   icon: 'lock'
   color: 'blue'
