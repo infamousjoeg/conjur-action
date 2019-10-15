@@ -12,10 +12,9 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres@database/postgres
           CONJUR_DATA_KEY: testdatakey
-        options: --command=server
       client:
         image: cyberark/conjur-cli:5
-        options: --entrypoint=sleep --command=infinity
+        options: --entrypoint=[ "sleep", "infinity" ]
 
     steps:
       - name: Check containers deployed
