@@ -15,7 +15,10 @@ inputs:
     description: 'The API Key associated with the given Host ID'
     required: true
   certificate:
-    description: 'The Certificate for your CyberArk Conjur instance, if using SSL'
+    description: 'The Self-Signed SSL Certificate for your CyberArk Conjur instance'
+  secrets:
+    description: 'A semi-colon delimited list of secrets to retrieve. See README for more details.'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
