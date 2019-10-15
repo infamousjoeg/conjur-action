@@ -7,13 +7,13 @@ jobs:
     services:
       database:
         image: postgres:9.4
-        name: database
+        options: --name database
       conjur:
         image: cyberark/conjur
-        name: conjur
         env:
           DATABASE_URL: postgres://postgres@database/postgres
           CONJUR_DATA_KEY: testdatakey
+        options: --name conjur
 
     steps:
       - name: Check containers deployed
