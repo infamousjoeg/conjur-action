@@ -6,7 +6,7 @@ jobs:
 
     services:
       database:
-        image: postgresql:9.4
+        image: postgres:9.4
       conjur:
         image: cyberark/conjur
         env:
