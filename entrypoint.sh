@@ -26,15 +26,19 @@ hostId=$(urlencode "$3")
 if [[ -n "$5" ]]; then
     # Create conjur_account.pem for valid SSL
     echo "$5" > conjur_"$2".pem
+
     # Authenticate and receive session token from Conjur - encode Base64
     token=$(curl --cacert conjur_"$2".pem --data "$4" "$1"/authn/"$2"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+
     # Iterate through secrets parsing...
     # Secrets Example: db/sqlusername | sql_username; db/sql_password
     IFS=';'
     read -ra SECRETS <<< "$6" # [0]=db/sqlusername | sql_username [1]=db/sql_password
+
     for secret in "${SECRETS[@]}"; do
         IFS='|'
         read -ra METADATA <<< "$secret" # [0]=db/sqlusername [1]=sql_username
+
         if [[ "${#METADATA[@]}" == 2 ]]; then
             secretId=$(urlencode "${METADATA[0]}")
             envVar=${METADATA[1]^^}
@@ -46,22 +50,28 @@ if [[ -n "$5" ]]; then
             lastIndex=$((arrLength-1)) # Subtract one for last index
             envVar=${SPLITSECRET[$lastIndex]^^}
         fi
+
         secretVal=$(curl --cacert conjur_"$2".pem -H "Authorization: Token token=\"$token\"" "$1"/secrets/"$2"/variable/"$secretId")
+
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo ::set-env name="${envVar}"::"${secretVal}" # Set environment variable
     done
+
     IFS=' '
 # Else certificate input is empty...
 else
     # Authenticate and receive session token from Conjur - encode Base64
     token=$(curl -k --data "$4" "$1"/authn/"$2"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+
     # Iterate through secrets after parsing...
     # Secrets Example: db/sqlusername | sql_username; db/sql_password
     IFS=';'
     read -ra SECRETS <<< "$6" # [0]=db/sqlusername | sql_username [1]=db/sql_password
+
     for secret in "${SECRETS[@]}"; do
         IFS='|'
         read -ra METADATA <<< "$secret" # [0]=db/sqlusername [1]=sql_username
+
         if [[ "${#METADATA[@]}" == 2 ]]; then
             secretId=$(urlencode "${METADATA[0]}")
             envVar=${METADATA[1]^^}
@@ -73,9 +83,12 @@ else
             lastIndex=$((arrLength-1)) # Subtract one for last index
             envVar=${SPLITSECRET[$lastIndex]^^}
         fi
+
         secretVal=$(curl -k -H "Authorization: Token token=\"$token\"" "$1"/secrets/"$2"/variable/"$secretId")
+
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo ::set-env name="${envVar}"::"${secretVal}" # Set environment variable
     done
+    
     IFS=' '
 fi
