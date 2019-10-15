@@ -8,9 +8,10 @@ jobs:
       - uses: actions/checkout@v1
       - name: Use CyberArk Conjur Secret Fetcher
         uses: ./
-        args:
-          url: ${{ secrets.CONJUR_URL }}
-          account: cyberarkdemo
-          host_id: ${{ secrets.CONJUR_USERNAME }}
-          api_key: ${{ secrets.CONJUR_API_KEY }}
-          secrets: db/sqlusername | sql_username; db/sql_password
+        with:
+          args:
+            url: ${{ secrets.CONJUR_URL }}
+            account: cyberarkdemo
+            host_id: ${{ secrets.CONJUR_USERNAME }}
+            api_key: ${{ secrets.CONJUR_API_KEY }}
+            secrets: db/sqlusername | sql_username; db/sql_password
