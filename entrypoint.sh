@@ -5,7 +5,7 @@ urlencode() {
     # urlencode <string>
     old_lc_collate=$LC_COLLATE
     LC_COLLATE=C
-    
+
     local length="${#1}"
     for (( i = 0; i < length; i++ )); do
         local c="${1:i:1}"
@@ -15,7 +15,7 @@ urlencode() {
             *) printf '%%%02X' "'$c" ;;
         esac
     done
-    
+
     LC_COLLATE=$old_lc_collate
 }
 
@@ -89,6 +89,6 @@ else
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo ::set-env name="${envVar}"::"${secretVal}" # Set environment variable
     done
-    
+
     IFS=' '
 fi
