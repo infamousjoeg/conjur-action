@@ -7,12 +7,13 @@ jobs:
     services:
       database:
         image: postgres:9.4
+        name: database
       conjur:
         image: cyberark/conjur
+        name: conjur
         env:
           DATABASE_URL: postgres://postgres@database/postgres
           CONJUR_DATA_KEY: testdatakey
-        options: --entrypoint "conjurctl server"
 
     steps:
       - name: Check containers deployed
