@@ -1,7 +1,5 @@
-FROM node:slim
+FROM alpine:latest
 
-COPY . .
+COPY entrypoint.sh /entrypoint.sh
 
-RUN npm install --production
-
-ENTRYPOINT ["node", "/lib/main.js"]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -1,10 +1,30 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
+name: 'CyberArk Conjur Secret Fetcher'
+description: 'Securely retrieve a secret from CyberArk Conjur and present to your action as a masked environment variable'
+author: 'Joe Garcia, CISSP'
 inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+  url:
+    description: 'The URL for CyberArk Conjur endpoint'
+    required: true
+  account:
+    description: 'The account name of your CyberArk Conjur instance'
+    required: true
+  host_id:
+    description: 'The Host ID to be used for authentication to CyberArk Conjur e.g. host/github-action'
+    required: true
+  api_key:
+    description: 'The API Key associated with the given Host ID'
+    required: true
+  certificate:
+    description: 'The Certificate for your CyberArk Conjur instance, if using SSL'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - ${{ inputs.url }}
+    - ${{ inputs.account }}
+    - ${{ inputs.host_id }}
+    - ${{ inputs.api_key }}
+    - ${{ inputs.certificate }}
+branding:
+  icon: 'lock'
+  color: 'blue'
