@@ -14,11 +14,11 @@ inputs:
   api_key:
     description: 'The API Key associated with the given Host ID'
     required: true
-  certificate:
-    description: 'The Self-Signed SSL Certificate for your CyberArk Conjur instance'
   secrets:
     description: 'A semi-colon delimited list of secrets to retrieve. See README for more details.'
     required: true
+  certificate:
+    description: 'The Self-Signed SSL Certificate for your CyberArk Conjur instance'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -27,8 +27,8 @@ runs:
     - ${{ inputs.account }}
     - ${{ inputs.host_id }}
     - ${{ inputs.api_key }}
-    - ${{ inputs.certificate }}
     - ${{ inputs.secrets }}
+    - ${{ inputs.certificate }}
 branding:
   icon: 'lock'
   color: 'blue'
