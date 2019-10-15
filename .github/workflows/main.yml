@@ -1,0 +1,22 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: postgresql/9.4
+      conjur:
+        image: cyberark/conjur
+        env:
+          DATABASE_URL: postgres://postgres@database/postgres
+          CONJUR_DATA_KEY: testdatakey
+        options: --command=server
+      client:
+        image: cyberark/conjur-cli:5
+        options: --entrypoint=sleep --command=infinity
+
+    steps:
+      - name: Check containers deployed
+        run: docker ps -a
