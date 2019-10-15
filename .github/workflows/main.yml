@@ -4,17 +4,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      database:
-        image: postgres:9.4
-        options: --name database
-      conjur:
-        image: cyberark/conjur
-        env:
-          DATABASE_URL: postgres://postgres@database/postgres
-          CONJUR_DATA_KEY: testdatakey
-        options: --name conjur
-
     steps:
-      - name: Check containers deployed
-        run: docker ps -a
+      - uses: actions/checkout@v1
+      - name: Use CyberArk Conjur Secret Fetcher
+        uses: ./
+        with:
+          url: ${{ secrets.CONJUR_URL }}
+          account: cyberarkdemo
+          host_id: ${{ secrets.CONJUR_USERNAME }}
+          api_key: ${{ secrets.CONJUR_API_KEY }}
+          secrets: db/sqlusername | sql_username; db/sql_password
