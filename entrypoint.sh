@@ -20,20 +20,20 @@ urlencode() {
 }
 
 # URL-encode Host ID for future use
-hostId=$(urlencode "$3")
+hostId=$(urlencode "$INPUT_HOST_ID")
 
 # If certificate input is not empty...
-if [[ -n "$6" ]]; then
+if [[ -n "$INPUT_CERTIFICATE" ]]; then
     # Create conjur_account.pem for valid SSL
-    echo "$6" > conjur_"$2".pem
+    echo "$INPUT_CERTIFICATE" > conjur_"$INPUT_ACCOUNT".pem
 
     # Authenticate and receive session token from Conjur - encode Base64
-    token=$(curl --cacert conjur_"$2".pem --data "$4" "$1"/authn/"$2"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+    token=$(curl --cacert conjur_"$INPUT_ACCOUNT".pem --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
 
     # Iterate through secrets parsing...
     # Secrets Example: db/sqlusername | sql_username; db/sql_password
     IFS=';'
-    read -ra SECRETS <<< "$5" # [0]=db/sqlusername | sql_username [1]=db/sql_password
+    read -ra SECRETS <<< "$INPUT_SECRETS" # [0]=db/sqlusername | sql_username [1]=db/sql_password
 
     for secret in "${SECRETS[@]}"; do
         IFS='|'
@@ -51,7 +51,7 @@ if [[ -n "$6" ]]; then
             envVar=${SPLITSECRET[$lastIndex]^^}
         fi
 
-        secretVal=$(curl --cacert conjur_"$2".pem -H "Authorization: Token token=\"$token\"" "$1"/secrets/"$2"/variable/"$secretId")
+        secretVal=$(curl --cacert conjur_"$INPUT_ACCOUNT".pem -H "Authorization: Token token=\"$token\"" "$INPUT_URL"/secrets/"$INPUT_ACCOUNT"/variable/"$secretId")
 
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo ::set-env name="${envVar}"::"${secretVal}" # Set environment variable
@@ -61,12 +61,12 @@ if [[ -n "$6" ]]; then
 # Else certificate input is empty...
 else
     # Authenticate and receive session token from Conjur - encode Base64
-    token=$(curl -k --data "$4" "$1"/authn/"$2"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+    token=$(curl -k --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
 
     # Iterate through secrets after parsing...
     # Secrets Example: db/sqlusername | sql_username; db/sql_password
     IFS=';'
-    read -ra SECRETS <<< "$5" # [0]=db/sqlusername | sql_username [1]=db/sql_password
+    read -ra SECRETS <<< "$INPUT_SECRETS" # [0]=db/sqlusername | sql_username [1]=db/sql_password
 
     for secret in "${SECRETS[@]}"; do
         IFS='|'
@@ -84,7 +84,7 @@ else
             envVar=${SPLITSECRET[$lastIndex]^^}
         fi
 
-        secretVal=$(curl -k -H "Authorization: Token token=\"$token\"" "$1"/secrets/"$2"/variable/"$secretId")
+        secretVal=$(curl -k -H "Authorization: Token token=\"$token\"" "$INPUT_URL"/secrets/"$INPUT_ACCOUNT"/variable/"$secretId")
 
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo ::set-env name="${envVar}"::"${secretVal}" # Set environment variable
