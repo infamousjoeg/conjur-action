@@ -9,9 +9,9 @@ jobs:
       - name: Use CyberArk Conjur Secret Fetcher
         uses: ./
         with:
-          args:
-            url: ${{ secrets.CONJUR_URL }}
-            account: cyberarkdemo
-            host_id: ${{ secrets.CONJUR_USERNAME }}
-            api_key: ${{ secrets.CONJUR_API_KEY }}
-            secrets: db/sqlusername | sql_username; db/sql_password
+          args: |
+            ${{ secrets.CONJUR_URL }} |
+            cyberarkdemo |
+            ${{ secrets.CONJUR_USERNAME }} |
+            ${{ secrets.CONJUR_API_KEY }} |
+            "db/sqlusername | sql_username; db/sql_password"
