@@ -2,6 +2,8 @@
 
 GitHub Action for secure secrets delivery to your workflow test environment using CyberArk Conjur.
 
+![](https://github.com/infamousjoeg/conjur-action/workflows/conjur-action%20Test/badge.svg)
+
 ## Example
 
 ```yaml

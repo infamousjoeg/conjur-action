@@ -1,3 +1,5 @@
+name: conjur-action Test
+
 on: [push]
 
 jobs:
