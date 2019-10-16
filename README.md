@@ -41,7 +41,11 @@ jobs:
 
 ## Secrets Syntax
 
+`{{ conjurVariable1 | envVarName1; conjurVariable2 }}`
+
 The `secrets` argument is a semi-colon (`;`) delimited list of secrets. The list can optionally contain the name to set for the environment variable.
+
+### Example
 
 `db/sqlusername | sql_username; db/sql_password`
 
