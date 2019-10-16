@@ -14,5 +14,5 @@ jobs:
           host_id: ${{ secrets.CONJUR_USERNAME }}
           api_key: ${{ secrets.CONJUR_API_KEY }}
           secrets: db/sqlusername | sql_username; db/sql_password
-      - name: Use Fetched Secrets Outside Docker Container
-        run: printenv SQL_USERNAME && printenv SQL_PASSWORD
+      - name: Check Environment Outside Docker Container for Secret Masking
+        run: env
