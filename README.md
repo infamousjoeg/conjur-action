@@ -43,7 +43,7 @@ The `secrets` argument is a semi-colon (`;`) delimited list of secrets. The list
 
 `db/sqlusername | sql_username; db/sql_password`
 
-In the above example, the first secret section is `db/sqlusername | sql_username`.  The `|` separates the Conjur Variable ID from the environment variable name to set the value to.  The Secret Fetcher action will UPPERCASE all environment variables before setting.
+In the above example, the first secret section is `db/sqlusername | sql_username`.  The `|` separates the Conjur Variable ID from the environment variable that will contain the value of the Conjur Variable's value.
 
 The second secret section is `db/sql_password`.  When no name is given for the environment variable, the Conjur Variable Name will be used.  In this example, the value would be set to `SQL_PASSWORD` as the environment variable name.
 
