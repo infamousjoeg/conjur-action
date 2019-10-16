@@ -54,6 +54,7 @@ set_secrets() {
             arrLength=${#SPLITSECRET[@]} # Get array length
             lastIndex=$((arrLength-1)) # Subtract one for last index
             envVar=${SPLITSECRET[$lastIndex]^^}
+            secretId=$(urlencode "${METADATA[0]}")
         fi
 
         if [[ -n "$INPUT_CERTIFICATE" ]]; then
@@ -70,8 +71,8 @@ set_secrets() {
 # URL-encode Host ID for future use
 hostId=$(urlencode "$INPUT_HOST_ID")
 
-create_pem()
-conjur_authn()
+create_pem
+conjur_authn
 # Secrets Example: db/sqlusername | sql_username; db/sql_password
-array_secrets()
-set_secrets()
+array_secrets
+set_secrets
