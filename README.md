@@ -1,10 +1,16 @@
 # CyberArk Conjur Secret Fetcher
 
-GitHub Action for secure secrets delivery to your workflow test environment using CyberArk Conjur.
+GitHub Action for secure secrets delivery to your workflow test environment using [CyberArk Conjur](https://conjur.org).
 
-[![](https://github.com/infamousjoeg/conjur-action/workflows/conjur-action%20Test/badge.svg)](https://github.com/infamousjoeg/conjur-action/actions?workflow=conjur-action+Test)
+![](https://img.shields.io/badge/Certification%20Level-Community-28A745?link=https://github.com/cyberark/community/blob/master/Conjur/conventions/certification-levels.md) [![](https://github.com/infamousjoeg/conjur-action/workflows/conjur-action%20Test/badge.svg)](https://github.com/infamousjoeg/conjur-action/actions?workflow=conjur-action+Test)
 
-## Example
+## Requirements
+
+* [CyberArk Conjur](https://conjur.org)
+
+## Usage instructions
+
+### Example
 
 ```yaml
 on: [push]
@@ -25,9 +31,9 @@ jobs:
       # ...
 ```
 
-## Arguments
+### Arguments
 
-### Required
+#### Required
 
 * `url` - this is the path to your Conjur instance endpoint.  e.g. `https://conjur.cyberark.com:8443`
 * `account` - this is the account configured for the Conjur instance during deployment.
@@ -35,17 +41,17 @@ jobs:
 * `api_key` - this is the API key associated with your Host ID declared previously.
 * `secrets` - a semi-colon delimited list of secrets to fetch.  Refer to [Secrets Syntax](#secrets-syntax) in the README below for more details.
 
-### Optional
+#### Optional
 
 * `certificate` - if using a self-signed certificate, provide the contents for validated SSL.
 
-## Secrets Syntax
+### Secrets Syntax
 
 `{{ conjurVariable1 | envVarName1; conjurVariable2 }}`
 
 The `secrets` argument is a semi-colon (`;`) delimited list of secrets. The list can optionally contain the name to set for the environment variable.
 
-### Example
+#### Example
 
 `db/sqlusername | sql_username; db/sql_password`
 
@@ -72,6 +78,11 @@ Joe Garcia - [@infamousjoeg](https://github.com/infamousjoeg)
 [buymeacoffee]: https://www.buymeacoffee.com/infamousjoeg
 [buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png
 
+## Contributing
+
+I welcome contributions of all kinds to this repository. For instructions on how to get started and descriptions
+of my development workflows, please see my [contributing guide](CONTRIBUTING.md).
+
 ## License
 
-[MIT](LICENSE)
+This repository is licensed under Apache License 2.0 - see [`LICENSE`](LICENSE) for more details.
