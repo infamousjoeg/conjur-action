@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v1
@@ -21,6 +21,6 @@ jobs:
           account: cyberarkdemo
           host_id: ${{ secrets.CONJUR_USERNAME }}
           api_key: ${{ secrets.CONJUR_API_KEY }}
-          secrets: db/sqlusername | sql_username; db/sql_password
+          secrets: SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/username | sql_username; SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/password | sql_password
       - name: Check Environment Outside Docker Container for Secret Masking
-        run: env | grep SQL_
+        run: env | grep sql_
