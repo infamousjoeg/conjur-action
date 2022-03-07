@@ -21,7 +21,7 @@ jobs:
           account: cyberarkdemo
           host_id: ${{ secrets.CONJUR_USERNAME }}
           api_key: ${{ secrets.CONJUR_API_KEY }}
-          secrets: SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/username | sql_username;SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/password | sql_password
+          secrets: SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/username|sql_username;SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/password|sql_password
       - name: Check SQL_USERNAME Outside Docker Container for Secret Masking
         run: printenv SQL_USERNAME | sed 's/./& /g'
       - name: Check SQL_PASSWORD Outside Docker Container for Secret Masking
