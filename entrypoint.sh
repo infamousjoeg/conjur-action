@@ -25,13 +25,29 @@ create_pem() {
 }
 
 conjur_authn() {
-    if [[ -n "$INPUT_CERTIFICATE" ]]; then
-        # Authenticate and receive session token from Conjur - encode Base64
-        token=$(curl --cacert conjur_"$INPUT_ACCOUNT".pem --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
-    else
-        # Authenticate and receive session token from Conjur - encode Base64
-        token=$(curl -k --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
-    fi
+
+	if [[ -n "$INPUT_AUTHN_ID" ]]; then
+
+		echo "::debug Authenticate via Authn-JWT"
+		JWT_TOKEN=$(curl -H "Authorization:bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value )
+
+		if [[ -n "$INPUT_CERTIFICATE" ]]; then
+			token=$(curl --cacert conjur_"$INPUT_ACCOUNT".pem --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header 'Content-Type: application/x-www-form-urlencoded' --header "Accept-Encoding: base64" --data-urlencode jwt=$JWT_TOKEN)
+		else
+			token=$(curl -k --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header 'Content-Type: application/x-www-form-urlencoded' --header "Accept-Encoding: base64" --data-urlencode jwt=$JWT_TOKEN)
+
+		fi
+	else
+		echo "::debug Authenticate using Host ID & API Key"
+
+		if [[ -n "$INPUT_CERTIFICATE" ]]; then
+			# Authenticate and receive session token from Conjur - encode Base64
+			token=$(curl --cacert conjur_"$INPUT_ACCOUNT".pem --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+		else
+			# Authenticate and receive session token from Conjur - encode Base64
+			token=$(curl -k --data "$INPUT_API_KEY" "$INPUT_URL"/authn/"$INPUT_ACCOUNT"/"$hostId"/authenticate | base64 | tr -d '\r\n')
+		fi
+	fi
 }
 
 array_secrets() {

@@ -10,10 +10,13 @@ inputs:
     required: true
   host_id:
     description: 'The Host ID to be used for authentication to CyberArk Conjur e.g. host/github-action'
-    required: true
+    required: false
   api_key:
     description: 'The API Key associated with the given Host ID'
-    required: true
+    required: false
+  authn_id:
+    description: 'The ID of JWT Authenticator'
+    required: false
   secrets:
     description: 'A semi-colon delimited list of secrets to retrieve. See README for more details.'
     required: true
@@ -27,6 +30,7 @@ runs:
     - ${{ inputs.account }}
     - ${{ inputs.host_id }}
     - ${{ inputs.api_key }}
+    - ${{ inputs.authn_id }}
     - ${{ inputs.secrets }}
     - ${{ inputs.certificate }}
 branding:
