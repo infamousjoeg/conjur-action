@@ -9,6 +9,7 @@
       #- !variable
       #    id: provider-uri
 
+      # jwks-uri for GitHub Actions: https://token.actions.githubusercontent.com/.well-known/jwks
       - !variable
         id: jwks-uri
 
@@ -17,15 +18,22 @@
       #Note: If you uncomment 'token-app-property' you must also uncomment 'identity-path',
       #and vice versa;
 
+      #In this example, "token-app-property" is set to "workflow"
+      #Please refer to README.md for detailed policy and commands
       - !variable
         id: token-app-property
 
+      #In this example, "identity-path" is set to "/github-apps"
+      #Please refer to README.md for detailed policy and commands
       - !variable
         id: identity-path
 
+      #"issuer" for GitHub Actions: https://token.actions.githubusercontent.com
       - !variable
         id: issuer
-
+        
+      #In this example, "enforced-claims" is set to "workflow,repository"
+      #Please refer to README.md for detailed policy and commands
       - !variable
           id: enforced-claims
 
