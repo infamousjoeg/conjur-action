@@ -1,0 +1,64 @@
+- !policy
+  id: conjur/authn-jwt/github
+  body:
+      - !webservice
+
+      #Mandatory variable: The JWT provider URI
+      #Uncomment either 'provider-uri' OR 'jwks-uri'
+
+      #- !variable
+      #    id: provider-uri
+
+      # jwks-uri for GitHub Actions: https://token.actions.githubusercontent.com/.well-known/jwks
+      - !variable
+        id: jwks-uri
+
+      #Optional variables
+      #Uncomment one or all of the following optional variables.
+      #Note: If you uncomment 'token-app-property' you must also uncomment 'identity-path',
+      #and vice versa;
+
+      #In this example, "token-app-property" is set to "workflow"
+      #Please refer to README.md for detailed policy and commands
+      - !variable
+        id: token-app-property
+
+      #In this example, "identity-path" is set to "/github-apps"
+      #Please refer to README.md for detailed policy and commands
+      - !variable
+        id: identity-path
+
+      #"issuer" for GitHub Actions: https://token.actions.githubusercontent.com
+      - !variable
+        id: issuer
+        
+      #In this example, "enforced-claims" is set to "workflow,repository"
+      #Please refer to README.md for detailed policy and commands
+      - !variable
+          id: enforced-claims
+
+      #- !variable
+      #    id: mapping-claims
+
+      #- !variable
+      #    id: audience
+
+      #Group of applications that can authenticate using this JWT Authenticator
+      - !group apps
+
+      - !permit
+        role: !group apps
+        privilege: [read, authenticate]
+        resource: !webservice
+
+      - !webservice
+        id: status
+
+      #Group of users who can check the status of the JWT Authenticator
+      - !group
+        id: operators
+
+      - !permit
+        role: !group operators
+        privilege: [read]
+        resource: !webservice status
