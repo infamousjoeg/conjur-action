@@ -80,7 +80,7 @@ set_secrets() {
         fi
 
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
-        echo "${envVar}=${secretVal}" >> $GITHUB_ENV # Set environment variable
+        echo "${envVar}=${secretVal}" >> "${GITHUB_ENV}" # Set environment variable
     done
 }
 
