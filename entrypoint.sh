@@ -79,6 +79,10 @@ set_secrets() {
             secretVal=$(curl -k -H "Authorization: Token token=\"$token\"" "$INPUT_URL"/secrets/"$INPUT_ACCOUNT"/variable/"$secretId")
         fi
 
+        if [[ "${secretVal}" == "Malformed authorization token" ]]; then
+            echo "Incorrect API key used."
+            exit 1
+        fi
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
         echo "${envVar}=${secretVal}" >> "${GITHUB_ENV}" # Set environment variable
     done
