@@ -9,18 +9,39 @@ on:
     - cron: 0 0 ? * *
 
 jobs:
-  test:
+  github-secrets:
     runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v1
-      - name: Use CyberArk Conjur Secret Fetcher
+      - name: Use CyberArk Conjur Secret Fetcher w/ GitHub Secrets
         uses: ./
         with:
           url: ${{ secrets.CONJUR_URL }}
           account: cyberarkdemo
           host_id: ${{ secrets.CONJUR_USERNAME }}
           api_key: ${{ secrets.CONJUR_API_KEY }}
+          secrets: SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/username|sql_username;SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/password|sql_password
+      - name: Check SQL_USERNAME Outside Docker Container for Secret Masking
+        run: printenv SQL_USERNAME | sed 's/./& /g'
+      - name: Check SQL_PASSWORD Outside Docker Container for Secret Masking
+        run: printenv SQL_PASSWORD | sed 's/./& /g'
+  
+  authn-jwt:
+    runs-on: self-hosted
+    
+    permissions:
+      id-token: 'write'
+      contents: 'read'
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use CyberArk Conjur Secret Fetcher w/ GitHub JWT
+        uses: ./
+        with:
+          url: ${{ secrets.CONJUR_URL }}
+          account: cyberarkdemo
+          authn_id: ${{ secrets.CONJUR_SERVICE_ID }}
           secrets: SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/username|sql_username;SyncVault/LOB_CI/D-Win-SvcAccts/Operating System-WinDomain-joegarcia.dev-Svc_SSIS/password|sql_password
       - name: Check SQL_USERNAME Outside Docker Container for Secret Masking
         run: printenv SQL_USERNAME | sed 's/./& /g'
