@@ -38,13 +38,17 @@ conjur_authn() {
 
 		echo "::debug Authenticate via Authn-JWT"
 		JWT_TOKEN=$(curl -H "Authorization:bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value )
+        
+        echo "$JWT_TOKEN"
 
 		if [[ -n "$INPUT_CERTIFICATE" ]]; then
 			token=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
 		else
 			token=$(curl --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header 'Content-Type: application/x-www-form-urlencoded' --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
-            echo "Token: $token"
 		fi
+
+        echo "Token: $token"
+
 	else
 		echo "::debug Authenticate using Host ID & API Key"
 
@@ -84,6 +88,8 @@ set_secrets() {
             secretId=$(urlencode "${METADATA[0]}")
         fi
 
+        echo "curl -H Authorization: Token token=\"$token\" $INPUT_URL/secrets/$INPUT_ACCOUNT/variable/$secretId"
+        
         if [[ -n "$INPUT_CERTIFICATE" ]]; then
             secretVal=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" -H "Authorization: Token token=\"$token\"" "$INPUT_URL/secrets/$INPUT_ACCOUNT/variable/$secretId")
         else
@@ -92,7 +98,6 @@ set_secrets() {
 
         if [[ "${secretVal}" == "Malformed authorization token" ]]; then
             echo "::error::Malformed authorization token. Please check your Conjur account, username, and API key."
-            echo "Response: $secretVal"
             exit 1
         fi
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
