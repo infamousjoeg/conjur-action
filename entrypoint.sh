@@ -39,15 +39,13 @@ conjur_authn() {
 		echo "::debug Authenticate via Authn-JWT"
 		JWT_TOKEN=$(curl -H "Authorization:bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value )
         
-        echo "$JWT_TOKEN"
-
 		if [[ -n "$INPUT_CERTIFICATE" ]]; then
+            echo "::debug Authenticating with certificate"
 			token=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
 		else
+            echo "::debug Authenticating without certificate"
 			token=$(curl --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header 'Content-Type: application/x-www-form-urlencoded' --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
 		fi
-
-        echo "Token: $token"
 
 	else
 		echo "::debug Authenticate using Host ID & API Key"
@@ -57,9 +55,11 @@ conjur_authn() {
 
 		if [[ -n "$INPUT_CERTIFICATE" ]]; then
 			# Authenticate and receive session token from Conjur - encode Base64
-			token=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" --data "$INPUT_API_KEY" "$INPUT_URL/authn/$INPUT_ACCOUNT/$hostId/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64")
+			echo "::debug Authenticating with certificate"
+            token=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" --data "$INPUT_API_KEY" "$INPUT_URL/authn/$INPUT_ACCOUNT/$hostId/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64")
 		else
 			# Authenticate and receive session token from Conjur - encode Base64
+            echo "::debug Authenticating without certificate"
 			token=$(curl --request POST --data "$INPUT_API_KEY" "$INPUT_URL/authn/$INPUT_ACCOUNT/$hostId/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64")
 		fi
 	fi
@@ -87,17 +87,17 @@ set_secrets() {
             envVar=${SPLITSECRET[$lastIndex]^^}
             secretId=$(urlencode "${METADATA[0]}")
         fi
-
-        echo "curl -H Authorization: Token token=\"$token\" $INPUT_URL/secrets/$INPUT_ACCOUNT/variable/$secretId"
         
         if [[ -n "$INPUT_CERTIFICATE" ]]; then
+            echo "::debug Retrieving secret with certificate"
             secretVal=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" -H "Authorization: Token token=\"$token\"" "$INPUT_URL/secrets/$INPUT_ACCOUNT/variable/$secretId")
         else
+            echo "::debug Retrieving secret without certificate"
             secretVal=$(curl -H "Authorization: Token token=\"$token\"" "$INPUT_URL/secrets/$INPUT_ACCOUNT/variable/$secretId")
         fi
 
         if [[ "${secretVal}" == "Malformed authorization token" ]]; then
-            echo "::error::Malformed authorization token. Please check your Conjur account, username, and API key."
+            echo "::error::Malformed authorization token. Please check your Conjur account, username, and API key. If using authn-jwt, check your Host ID annotations are correct."
             exit 1
         fi
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
