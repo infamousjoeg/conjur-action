@@ -23,6 +23,9 @@ jobs:
         run: printenv SQL_USERNAME | sed 's/./& /g'
       - name: Check SQL_PASSWORD Outside Docker Container for Secret Masking
         run: printenv SQL_PASSWORD | sed 's/./& /g'
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1.1.0
+
   
   authn-jwt:
     runs-on: self-hosted
@@ -44,3 +47,6 @@ jobs:
         run: printenv SQL_USERNAME | sed 's/./& /g'
       - name: Check SQL_PASSWORD Outside Docker Container for Secret Masking
         run: printenv SQL_PASSWORD | sed 's/./& /g'
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1.1.0
+
