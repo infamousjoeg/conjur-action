@@ -43,7 +43,7 @@ conjur_authn() {
 			token=$(curl --cacert "conjur_$INPUT_ACCOUNT.pem" --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header "Content-Type: application/x-www-form-urlencoded" --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
 		else
 			token=$(curl --request POST "$INPUT_URL/authn-jwt/$INPUT_AUTHN_ID/$INPUT_ACCOUNT/authenticate" --header 'Content-Type: application/x-www-form-urlencoded' --header "Accept-Encoding: base64" --data-urlencode "jwt=$JWT_TOKEN")
-
+            echo "Token: $token"
 		fi
 	else
 		echo "::debug Authenticate using Host ID & API Key"
@@ -91,7 +91,8 @@ set_secrets() {
         fi
 
         if [[ "${secretVal}" == "Malformed authorization token" ]]; then
-            echo "Incorrect API key used."
+            echo "::error::Malformed authorization token. Please check your Conjur account, username, and API key."
+            echo "Response: $secretVal"
             exit 1
         fi
         echo ::add-mask::"${secretVal}" # Masks the value in all logs & output
