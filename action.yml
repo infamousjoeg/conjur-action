@@ -1,6 +1,6 @@
 name: 'CyberArk Conjur Secret Fetcher'
-description: 'Securely retrieve a secret from CyberArk Conjur and present to your action as a masked environment variable'
-author: 'Joe Garcia, CISSP'
+description: 'Securely retrieve a secret from CyberArk Conjur Secrets Manager and present to your action as a masked environment variable'
+author: 'Joe Garcia'
 inputs: 
   url:
     description: 'The URL for CyberArk Conjur endpoint'
@@ -9,13 +9,13 @@ inputs:
     description: 'The account name of your CyberArk Conjur instance'
     required: true
   host_id:
-    description: 'The Host ID to be used for authentication to CyberArk Conjur e.g. host/github-action'
+    description: 'The Host ID to be used for authentication to CyberArk Conjur Secrets Manager e.g. host/github-action'
     required: false
   api_key:
     description: 'The API Key associated with the given Host ID'
     required: false
   authn_id:
-    description: 'The ID of JWT Authenticator'
+    description: 'The Service ID of JWT Authenticator'
     required: false
   secrets:
     description: 'A semi-colon delimited list of secrets to retrieve. See README for more details.'
