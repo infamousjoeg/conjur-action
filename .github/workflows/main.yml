@@ -34,6 +34,7 @@ jobs:
 
   github-secrets:
     runs-on: self-hosted
+    needs: authn-jwt
 
     steps:
       - uses: actions/checkout@v1
