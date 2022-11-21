@@ -32,6 +32,7 @@ jobs:
   
   authn-jwt:
     runs-on: self-hosted
+    needs: github-secrets
     
     permissions:
       id-token: 'write'
