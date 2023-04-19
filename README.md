@@ -63,7 +63,7 @@ jobs:
     # ...
     permissions:
       id-token: 'write'
-      contents: 'read
+      contents: 'read'
     steps:
       # ...
       - name: Import Secrets using CyberArk Conjur Secret Fetcher
