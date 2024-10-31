@@ -1,5 +1,7 @@
 # CyberArk Conjur Secret Fetcher
 
+_Repository archived for certified version at https://github.com/cyberark/conjur-action_
+
 GitHub Action for secure secrets delivery to your workflow test environment using CyberArk Conjur.
 
 Supports authenticating with CyberArk Conjur using host identity and JWT authentication.
